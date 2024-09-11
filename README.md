@@ -1,47 +1,13 @@
-# Welcome to Remix + Cloudflare!
+## Wotion
 
-- 📖 [Remix docs](https://remix.run/docs)
-- 📖 [Remix Cloudflare docs](https://remix.run/guides/vite#cloudflare)
+The aim of this project is for me to learn a bit of Remix and experiment with Cloudflare and their services.
 
-## Development
+The general flow will be:
 
-Run the dev server:
+1. Create a new page
+2. Save that to D1
+3. Edit the page
+4. Update to D1 via debouncing
+5. Allow deleting of pages
 
-```sh
-npm run dev
-```
-
-To run Wrangler:
-
-```sh
-npm run build
-npm run start
-```
-
-## Typegen
-
-Generate types for your Cloudflare bindings in `wrangler.toml`:
-
-```sh
-npm run typegen
-```
-
-You will need to rerun typegen whenever you make changes to `wrangler.toml`.
-
-## Deployment
-
-First, build your app for production:
-
-```sh
-npm run build
-```
-
-Then, deploy your app to Cloudflare Pages:
-
-```sh
-npm run deploy
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+I'll also need to add in auth.
