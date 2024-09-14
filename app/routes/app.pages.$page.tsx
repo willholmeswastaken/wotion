@@ -73,17 +73,14 @@ export default function Component() {
 
   const fetcher = useFetcher({ key: "page-update" });
 
-  const handleContentChange = (editor: string) => {
-    console.log("editor", editor);
+  const handleContentChange = (content: string) => {
     fetcher.submit(
-      { content: editor ?? "" },
+      { content: content ?? "<p></p>" },
       {
         method: "post",
       }
     );
   };
-
-  console.log(page?.content ?? "<p></p>");
 
   return (
     <div>

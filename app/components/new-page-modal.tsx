@@ -23,6 +23,7 @@ export function NewPageModal({
     if (!pageName.trim()) return;
     onSubmit(pageName, () => {
       closeRef.current?.click();
+      setPageName("");
     });
   };
 
@@ -38,15 +39,23 @@ export function NewPageModal({
         <DialogHeader>
           <DialogTitle>Create New Page</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <form
+          className="grid gap-4 py-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleCreatePage();
+          }}
+        >
           <Input
             id="pageName"
             placeholder="Enter page name"
             value={pageName}
             onChange={(e) => setPageName(e.target.value)}
           />
-          <Button onClick={handleCreatePage}>Create</Button>
-        </div>
+          <Button type="submit" className="w-full">
+            Create
+          </Button>
+        </form>
         <DialogClose ref={closeRef} className="hidden" />
       </DialogContent>
     </Dialog>

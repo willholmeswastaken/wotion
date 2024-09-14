@@ -24,7 +24,7 @@ type Page = {
 export const loader = async ({ context }: LoaderFunctionArgs) => {
   const { env } = context.cloudflare;
 
-  const pages = await env.DB.prepare("SELECT * FROM pages").all<Page>();
+  const pages = await env.DB.prepare("SELECT id, title FROM pages").all<Page>();
 
   return json({ pages });
 };
