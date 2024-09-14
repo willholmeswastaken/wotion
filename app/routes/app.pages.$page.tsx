@@ -11,6 +11,9 @@ import {
   useFetcher,
   useLoaderData,
 } from "@remix-run/react";
+import { Editor as Editor$1 } from "@tiptap/core";
+import { useDebounce } from "@/lib/hooks/use-debounce";
+import { useCallback } from "react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -73,21 +76,27 @@ export default function Component() {
 
   const fetcher = useFetcher({ key: "page-update" });
 
-  const handleContentChange = (content: string) => {
+  const debouncedSubmit = useDebounce((content: string) => {
+    console.log("submitting", content);
     fetcher.submit(
       { content: content ?? "<p></p>" },
       {
         method: "post",
       }
     );
-  };
+  }, 500);
+
+  const handleContentChange = useCallback(
+    (editor: Editor$1) => {
+      const content = editor.getHTML();
+      debouncedSubmit(content);
+    },
+    [debouncedSubmit]
+  );
 
   return (
     <div>
-      <Editor
-        content={page?.content}
-        onUpdate={(editor) => handleContentChange(editor.getHTML())}
-      />
+      <Editor content={page?.content} onUpdate={handleContentChange} />
     </div>
   );
 }
