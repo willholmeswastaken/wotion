@@ -57,7 +57,7 @@ export function shouldRevalidate() {
 export default function Component() {
   const { page } = useLoaderData<typeof loader>();
 
-  const fetcher = useFetcher();
+  const fetcher = useFetcher({ key: "page-update" });
 
   const handleContentChange = (editor: string) => {
     fetcher.submit(

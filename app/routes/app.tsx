@@ -1,11 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { EditIcon } from "lucide-react";
 import { json, type LoaderFunctionArgs } from "@remix-run/cloudflare";
-import { Link, Outlet, useLoaderData, useSubmit } from "@remix-run/react";
+import {
+  Link,
+  Outlet,
+  useFetchers,
+  useLoaderData,
+  useSubmit,
+} from "@remix-run/react";
 import { NewPageModal } from "@/components/new-page-modal";
 import { v4 as uuidv4 } from "uuid";
 import { ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 type Page = {
   id: string;
@@ -52,12 +59,17 @@ export default function AppLayout() {
   const { pages } = useLoaderData<typeof loader>();
   const [showNewPageModal, setShowNewPageModal] = useState(false);
   const submit = useSubmit();
+  const fetchers = useFetchers();
 
-  // Update handleCreatePage to use the action
+  const isPageSaving = fetchers.some(
+    (fetcher) => fetcher.key === "page-update" && fetcher.state === "submitting"
+  );
+
   const handleCreatePage = (pageName: string) => {
     submit({ title: pageName }, { method: "post" });
     setShowNewPageModal(false);
   };
+
   return (
     <div className="flex h-screen bg-background text-foreground">
       {/* Sidebar */}
@@ -89,6 +101,19 @@ export default function AppLayout() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <header className="border-b p-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold">Wotion</h1>
+            <div className="flex items-center space-x-2">
+              {isPageSaving && (
+                <span className="flex items-center gap-x-1 text-sm">
+                  <Spinner size="small" /> Saving...
+                </span>
+              )}
+            </div>
+          </div>
+        </header>
         {/* Content */}
         <main className="flex-1 p-8 max-w-3xl w-full space-y-4">
           <Outlet />
