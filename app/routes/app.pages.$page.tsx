@@ -2,10 +2,15 @@ import { Editor } from "react-notion-wysiwyg";
 import {
   ActionFunctionArgs,
   json,
+  redirect,
   type LoaderFunctionArgs,
   type MetaFunction,
 } from "@remix-run/cloudflare";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import {
+  ShouldRevalidateFunction,
+  useFetcher,
+  useLoaderData,
+} from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -30,6 +35,12 @@ export const loader = async ({ params, context }: LoaderFunctionArgs) => {
     .bind(params.page)
     .first<Page>();
 
+  if (!page) {
+    return redirect("/app/not-found");
+  }
+
+  page.content = page?.content.length === 0 ? "<p></p>" : page?.content;
+
   return json({ page });
 };
 
@@ -50,9 +61,12 @@ export const action = async ({
   return json({ success: true });
 };
 
-export function shouldRevalidate() {
-  return false;
-}
+export const shouldRevalidate: ShouldRevalidateFunction = ({
+  currentParams,
+  nextParams,
+}) => {
+  return currentParams.page !== nextParams.page;
+};
 
 export default function Component() {
   const { page } = useLoaderData<typeof loader>();
@@ -60,6 +74,7 @@ export default function Component() {
   const fetcher = useFetcher({ key: "page-update" });
 
   const handleContentChange = (editor: string) => {
+    console.log("editor", editor);
     fetcher.submit(
       { content: editor ?? "" },
       {
@@ -68,10 +83,14 @@ export default function Component() {
     );
   };
 
+  console.log(page?.content ?? "<p></p>");
+
   return (
-    <Editor
-      content={page?.content}
-      onUpdate={(editor) => handleContentChange(editor.getHTML())}
-    />
+    <div>
+      <Editor
+        content={page?.content}
+        onUpdate={(editor) => handleContentChange(editor.getHTML())}
+      />
+    </div>
   );
 }

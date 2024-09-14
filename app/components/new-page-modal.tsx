@@ -1,31 +1,39 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Plus } from "lucide-react";
 
 export function NewPageModal({
   onSubmit,
-  open,
-  setOpen,
 }: {
-  onSubmit: (pageName: string) => void;
-  open: boolean;
-  setOpen: (open: boolean) => void;
+  onSubmit: (pageName: string, callback: () => void) => void;
 }) {
   const [pageName, setPageName] = useState("");
+  const closeRef = useRef<HTMLButtonElement>(null);
 
   const handleCreatePage = async () => {
     if (!pageName.trim()) return;
-    onSubmit(pageName);
+    onSubmit(pageName, () => {
+      closeRef.current?.click();
+    });
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => setOpen(!open)}>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button className="w-full">
+          <Plus className="mr-2 h-4 w-4" />
+          New Page
+        </Button>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create New Page</DialogTitle>
@@ -39,6 +47,7 @@ export function NewPageModal({
           />
           <Button onClick={handleCreatePage}>Create</Button>
         </div>
+        <DialogClose ref={closeRef} className="hidden" />
       </DialogContent>
     </Dialog>
   );
