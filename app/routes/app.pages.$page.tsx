@@ -77,7 +77,6 @@ export default function Component() {
   const fetcher = useFetcher({ key: "page-update" });
 
   const debouncedSubmit = useDebounce((content: string) => {
-    console.log("submitting", content);
     fetcher.submit(
       { content: content ?? "<p></p>" },
       {
